@@ -16,8 +16,8 @@ if not creds or creds.invalid:
     flow = client.flow_from_clientsecrets('./client_secret.json', SCOPES)
     creds = tools.run_flow(flow, store)
 SERVICE = build('drive', 'v3', http=creds.authorize(Http()))
-PARENT_FOLDER='1ozzzqaZ2DZwcr1STk3eKIpX2gV0ekstH'
-check_parent='1ozzzqaZ2DZwcr1STk3eKIpX2gV0ekstH'
+PARENT_FOLDER='1bZmtHJpX4WVois1AA2HD2t4jnw2hMpfI'
+check_parent='1bZmtHJpX4WVois1AA2HD2t4jnw2hMpfI'
 
 # Check if File exists
 def fileInGDrive(filename, parent):
@@ -63,9 +63,9 @@ def writeFromGDrive(file_id, file_name, dest, md5):
     print('\n', flush=True)   
     dest_md5=md5_check.md5_file(os.path.join(dest+'/'+file_name))
     if dest_md5==md5:
-        print('md5 checks out.')
+        print('md5 checks out for '+file_name)
     else:
-        print('md5 error- something corrupted')
+        print('md5 error- something corrupted for '+file_name)
 
 def downloader(download_dirs, downparent_folder=PARENT_FOLDER):
     for item in download_dirs:
@@ -89,12 +89,13 @@ def downloader(download_dirs, downparent_folder=PARENT_FOLDER):
         elif folderInGDrive(itemG, downparent_folder)[0]==True:
             downparent_folder=folderInGDrive(itemG, downparent_folder)[1]##This is the first check.
             try:
-                os.mkdir(os.path.join(itemD, itemG))
+                os.mkdir(itemD)
             except:
                 pass
             to_download_files=filesInGDrive(downparent_folder)
             for file in to_download_files:
-                writeFromGDrive(file['id'], file['name'],os.path.join(itemD, itemG),file['description'])
+                writeFromGDrive(file['id'], file['name'],itemD,file['description'])
             to_download_folders=foldersInGDrive(downparent_folder)
             for folder in to_download_folders:
-                downloader([[folder['name'],os.path.join(os.path.join(itemD, itemG),folder['name'])]],folder['id'])
+                downloader([[folder['name'],os.path.join(itemD,folder['name'])]],folder['id'])
+

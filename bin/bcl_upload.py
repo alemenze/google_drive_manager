@@ -7,6 +7,8 @@ import io
 import os
 import md5_check
 
+##IMPORTANT NOTE! INSTALL httplib2==0.15.0
+
 # Setup the Drive v3 API
 CLIENT_SECRET='./client_secret.json'
 SCOPES = 'https://www.googleapis.com/auth/drive.file'
@@ -16,7 +18,7 @@ if not creds or creds.invalid:
     flow = client.flow_from_clientsecrets('./client_secret.json', SCOPES)
     creds = tools.run_flow(flow, store)
 SERVICE = build('drive', 'v3', http=creds.authorize(Http()))
-PARENT_FOLDER='1ozzzqaZ2DZwcr1STk3eKIpX2gV0ekstH'
+PARENT_FOLDER='1KSg9zGdC_zvA_e5soo9aguTPEtCw9VFN'
 
 # Check if File exists
 def fileInGDrive(filename, parent):
@@ -43,7 +45,7 @@ def createGDriveFolder(filename,parent):
 
     folder = SERVICE.files().create(body=file_metadata,
                                         fields='id').execute()
-    print('Upload Success!')
+    print('Upload Success for '+filename)
     print('FolderID:', folder.get('id'))
     return folder.get('id')
 
@@ -69,7 +71,7 @@ def writeToGDrive(filename,source,folder_id, md5):
                 print("Uploaded %d%%." % int(status.progress() * 100))
         
         check=fileInGDrive(filename, folder_id)
-        print('Upload Success!')
+        print('Upload Success for '+filename)
         return check
         
     else:
@@ -84,8 +86,8 @@ def uploader(upload_dirs, upparent_folder=PARENT_FOLDER):
             print('New Folder', item, folder_id)
             new_parent=folder_id
         elif folderInGDrive(item,upparent_folder)[0]==True:
-            new_parent=folderInGDrive(item)[1]
-
+            new_parent=folderInGDrive(item,upparent_folder)[1]
+            
         one_dir=[]
         for dirpath, dirnames, filenames in os.walk(item_base, topdown=True):
 
@@ -104,10 +106,9 @@ def uploader(upload_dirs, upparent_folder=PARENT_FOLDER):
                     up_md5 = SERVICE.files().get(fileId=up_id, fields='description').execute()
                     
                     if source_md5 != up_md5['description']:
-                        print('ERROR IN UPLOAD')
+                        print('ERROR IN UPLOAD '+f)
                     else:
-                        print('md5 uploaded correctly')
+                        print('md5 uploaded correctly for '+f)
 
         #re-loop to next level
         uploader(one_dir, new_parent)
-

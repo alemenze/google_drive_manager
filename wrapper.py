@@ -7,38 +7,33 @@ sys.path.append('./bin/')
 import md5_check
 import bcl_download, bcl_upload
 
-sys.stdout=open('log.txt','w')
-
 #### tar the bcl folders
 bcl_dir='./bcl_folders/up'#just dont add the last /
+#### upload and download
+dir_start=os.path.abspath('./Data_storage')
+print(dir_start)
+    
 final_tarlist=[]
 for dirpath, dirnames, filenames in os.walk(bcl_dir, topdown=True):
     if dirpath.count(os.sep) - bcl_dir.count(os.sep) !=0:
         del dirnames[:]
         del filenames[:]
     for d in dirnames:
-        in_path=os.path.join(dirpath, d)
+        in_path=d
         out_tar=d+'.tar.gz'
         final_tarlist.append(out_tar)
-
-        out_path=os.path.join('./Data_storage/Raw_bcl/',out_tar)
-
+        out_path=dir_start+'/Raw_bcl/'+out_tar
         try:
-            subprocess.run('tar -czvf '+out_path+' -C '+in_path, shell=True)
+            subprocess.run('tar -czf '+out_path+' '+in_path, shell=True, cwd='./bcl_folders/up/', check=True)
         except Exception as e:
             print(e)
 
 print('Compression completed (if applicable)')
 
-#### upload and download
-dir_start='./Data_storage'
-
-
 try:
     bcl_upload.uploader([dir_start])
 except Exception as e:
     print(e)
-
 
 print('Upload step completed')
 
@@ -80,16 +75,18 @@ for f_in in files_start:
         print('download md5 ok for '+os.path.basename(f_out))
     else:
         print('ERROR! download md5 bad')
+
+print('Download step completed')
+       
 #### untar and md5 check for BCL downloads
 bcl_out='./download/Raw_bcl'
 tar_out='./bcl_folders/down'
 sub_tar_out=[]
 for dirpath, dirnames, filenames in os.walk(bcl_out, topdown=True):
     for f in filenames:
-        
         in_path=os.path.join(dirpath, f)
         try:
-            subprocess.run('tar -xzvf '+in_path+' -C '+tar_out,shell=True)
+            subprocess.run('tar -xzf '+in_path+' -C '+tar_out,shell=True)
             
         except Exception as e:
             print(e)
@@ -131,3 +128,4 @@ with open('./log.txt') as out_log:
     for line in out_log:
         if 'ERROR' in line or 'error' in line:
             raise NameError('Error in output file')
+

@@ -7,6 +7,9 @@ To run this, you will need to first set your google drive to be api accessible a
 
 From there, set your path accordingly in the script as needed. You also will need to replace the PARENT_FOLDER parameter with the appropriate google drive folder ID. I have a temporary one in there as a place holder for now. 
 
+### Wrapper workflow
+![Wrapper workflow image](docs/Data_transfer_workflow.png)
+
 ### To upload:
 ```python
 import bcl_upload

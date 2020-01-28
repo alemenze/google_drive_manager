@@ -9,6 +9,10 @@ From there, set your path accordingly in the script as needed. You also will nee
 
 ### Wrapper workflow
 ![Wrapper workflow image](docs/Data_transfer_workflow.png)
+To run
+```bash
+python3 wrapper.py > log.txt
+```
 
 ### To upload:
 ```python

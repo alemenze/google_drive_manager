@@ -74,7 +74,7 @@ for f_in in files_start:
     if len(match_count) >0:
         print('download md5 ok for '+os.path.basename(f_out))
     else:
-        print('ERROR! download md5 bad')
+        print('ERROR! download md5 bad for '+os.path.basename(f_out))
 
 print('Download step completed')
        
@@ -126,6 +126,6 @@ print('MD5 checksum validation completed')
 
 with open('./log.txt') as out_log:
     for line in out_log:
-        if 'ERROR' in line or 'error' in line:
+        if 'ERROR!' in line:
             raise NameError('Error in output file')
 

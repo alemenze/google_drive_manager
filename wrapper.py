@@ -60,9 +60,8 @@ for dirpath, dirnames, filenames in os.walk(dir_start):
 dir_end='./download'
 files_end=[]
 for dirpath, dirnames, filenames in os.walk(dir_end):
-    for d in dirnames:
-        for f in filenames:
-            files_end.append(os.path.join(dirpath,f))
+	for f in filenames:
+		files_end.append(os.path.join(dirpath,f))
 for f_in in files_start:
     match_count=[]
     for f_out in files_end:
@@ -72,9 +71,9 @@ for f_in in files_start:
             if f_in_md5==f_out_md5:
                 match_count.append('md5 match for '+os.path.basename(f_in)+' and '+os.path.basename(f_out))
     if len(match_count) >0:
-        print('download md5 ok for '+os.path.basename(f_out))
+        print('download md5 ok for '+os.path.basename(f_in))
     else:
-        print('ERROR! download md5 bad for '+os.path.basename(f_out))
+        print('ERROR! download md5 bad for '+os.path.basename(f_in))
 
 print('Download step completed')
        
